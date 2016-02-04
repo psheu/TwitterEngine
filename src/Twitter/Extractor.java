@@ -1,5 +1,8 @@
+package Twitter;
 import java.util.*;
 import java.util.regex.*;
+
+// extracting usernames, hashtags, URLs from Tweet
 
 public class Extractor{
 	  public static class Entity {

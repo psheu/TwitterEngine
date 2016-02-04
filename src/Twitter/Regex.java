@@ -1,3 +1,4 @@
+package Twitter;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.regex.Pattern;
@@ -12,10 +13,7 @@ public class Regex {
 
 	private static final String HASHTAG_LETTERS = "\\p{L}\\p{M}";
 	private static final String HASHTAG_NUMERALS = "\\p{Nd}";
-	private static final String HASHTAG_SPECIAL_CHARS = "_" + //underscore
-		                                              "\\uff5e" + // FULLWIDTH TILDE
-		                                              "\\u301c" + // WAVE DASH
-		                                              "\\u3003";  // DITTO MARK
+	private static final String HASHTAG_SPECIAL_CHARS = "_";//underscore
 
 	private static final String HASHTAG_LETTERS_NUMERALS = HASHTAG_LETTERS + HASHTAG_NUMERALS + HASHTAG_SPECIAL_CHARS;
 	private static final String HASHTAG_LETTERS_SET = "[" + HASHTAG_LETTERS + "]";

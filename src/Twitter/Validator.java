@@ -1,6 +1,7 @@
+package Twitter;
 import java.text.Normalizer;
 
-// validating Tweet texts
+// validating Tweet
 
 public class Validator {
   public static final int MAX_TWEET_LENGTH = 140;
