@@ -12,8 +12,7 @@ public class Extractor{
 		    protected int start;
 		    protected int end;
 		    protected final String value;
-		    // listSlug is used to store the list portion of @mention/list.
-		    protected final String listSlug;
+		    protected final String listSlug; // listSlug stores the list of @mention/list
 		    protected final Type type;
 
 		    protected String displayURL = null;
@@ -111,59 +110,23 @@ public class Extractor{
 
 		  protected boolean extractURLWithoutProtocol = true;
 
-		  /**
-		   * Create a new extractor.
-		   */
+		  // new extractor
 		  public Extractor() {
 		  }
 
-		  private void removeOverlappingEntities(List<Entity> entities) {
-		    // sort by index
-		    Collections.<Entity>sort(entities, new Comparator<Entity>() {
-		      public int compare(Entity e1, Entity e2) {
-		        return e1.start - e2.start;
-		      }
-		    });
-
-		    // Remove overlapping entities.
-		    // Two entities overlap only when one is URL and the other is hashtag/mention
-		    // which is a part of the URL. When it happens, we choose URL over hashtag/mention
-		    // by selecting the one with smaller start index.
-		    if (!entities.isEmpty()) {
-		      Iterator<Entity> it = entities.iterator();
-		      Entity prev = it.next();
-		      while (it.hasNext()) {
-		        Entity cur = it.next();
-		        if (prev.getEnd() > cur.getStart()) {
-		          it.remove();
-		        } else {
-		          prev = cur;
-		        }
-		      }
-		    }
-		  }
-
-		  /**
-		   * Extract URLs, @mentions, lists and #hashtag from a given text/tweet.
-		   * @param text text of tweet
-		   * @return list of extracted entities
-		   */
+		  // Extract URLs, @mentions, lists and #hashtag from a given text/tweet.
+		  // @param text text of tweet
+		  // @return list of extracted entities
 		  public List<Entity> extractEntitiesWithIndices(String text) {
 		    List<Entity> entities = new ArrayList<Entity>();
 		    entities.addAll(extractURLsWithIndices(text));
 		    entities.addAll(extractHashtagsWithIndices(text, false));
 		    entities.addAll(extractMentionsOrListsWithIndices(text));
 
-		    removeOverlappingEntities(entities);
 		    return entities;
 		  }
 
-		  /**
-		   * Extract @username references from Tweet text. A mention is an occurance of @username anywhere in a Tweet.
-		   *
-		   * @param text of the tweet from which to extract usernames
-		   * @return List of usernames referenced (without the leading @ sign)
-		   */
+		  //Extract @username references from Tweet text (mention)
 		  public List<String> extractMentionedScreennames(String text) {
 		    if (text == null || text.length() == 0) {
 		      return Collections.emptyList();
@@ -175,13 +138,6 @@ public class Extractor{
 		    }
 		    return extracted;
 		  }
-
-		  /**
-		   * Extract @username references from Tweet text. A mention is an occurance of @username anywhere in a Tweet.
-		   *
-		   * @param text of the tweet from which to extract usernames
-		   * @return List of usernames referenced (without the leading @ sign)
-		   */
 		  public List<Entity> extractMentionedScreennamesWithIndices(String text) {
 		    List<Entity> extracted = new ArrayList<Entity>();
 		    for (Entity entity : extractMentionsOrListsWithIndices(text)) {
@@ -197,9 +153,7 @@ public class Extractor{
 		      return Collections.emptyList();
 		    }
 
-		    // Performance optimization.
-		    // If text doesn't contain @/＠ at all, the text doesn't
-		    // contain @mention. So we can simply return an empty list.
+		    // If text doesn't contain @/＠ at all, return an empty list
 		    boolean found = false;
 		    for (char c : text.toCharArray()) {
 		      if (c == '@' || c == '＠') {
@@ -230,37 +184,8 @@ public class Extractor{
 		    return extracted;
 		  }
 
-		  /**
-		   * Extract a @username reference from the beginning of Tweet text. A reply is an occurance of @username at the
-		   * beginning of a Tweet, preceded by 0 or more spaces.
-		   *
-		   * @param text of the tweet from which to extract the replied to username
-		   * @return username referenced, if any (without the leading @ sign). Returns null if this is not a reply.
-		   */
-		  public String extractReplyScreenname(String text) {
-		    if (text == null) {
-		      return null;
-		    }
 
-		    Matcher matcher = Regex.VALID_REPLY.matcher(text);
-		    if (matcher.find()) {
-		      String after = text.substring(matcher.end());
-		      if (Regex.INVALID_MENTION_MATCH_END.matcher(after).find()) {
-		        return null;
-		      } else {
-		        return matcher.group(Regex.VALID_REPLY_GROUP_USERNAME);
-		      }
-		    } else {
-		      return null;
-		    }
-		  }
-
-		  /**
-		   * Extract URL references from Tweet text.
-		   *
-		   * @param text of the tweet from which to extract URLs
-		   * @return List of URLs referenced.
-		   */
+		  // Extract URL references from Tweet
 		  public List<String> extractURLs(String text) {
 		    if (text == null || text.length() == 0) {
 		      return Collections.emptyList();
@@ -272,19 +197,10 @@ public class Extractor{
 		    }
 		    return urls;
 		  }
-
-		  /**
-		   * Extract URL references from Tweet text.
-		   *
-		   * @param text of the tweet from which to extract URLs
-		   * @return List of URLs referenced.
-		   */
 		  public List<Entity> extractURLsWithIndices(String text) {
 		    if (text == null || text.length() == 0
 		        || (extractURLWithoutProtocol ? text.indexOf('.') : text.indexOf(':')) == -1) {
-		      // Performance optimization.
-		      // If text doesn't contain '.' or ':' at all, text doesn't contain URL,
-		      // so we can simply return an empty list.
+		      // If text doesn't contain '.' or ':' return an empty list (no URL in Tweet)
 		      return Collections.emptyList();
 		    }
 
@@ -306,7 +222,7 @@ public class Extractor{
 		      int end = matcher.end(Regex.VALID_URL_GROUP_URL);
 		      Matcher tco_matcher = Regex.VALID_TCO_URL.matcher(url);
 		      if (tco_matcher.find()) {
-		        // In the case of t.co URLs, don't allow additional path characters.
+		        // In the case of t.co URLs, don't allow additional path characters
 		        url = tco_matcher.group();
 		        end = start + url.length();
 		      }
@@ -318,12 +234,7 @@ public class Extractor{
 		  }
 
 
-		  /**
-		   * Extract #hashtag references from Tweet text.
-		   *
-		   * @param text of the tweet from which to extract hashtags
-		   * @return List of hashtags referenced (without the leading # sign)
-		   */
+		  // Extract hashtag references from Tweet
 		  public List<String> extractHashtags(String text) {
 		    if (text == null || text.length() == 0) {
 		      return Collections.emptyList();
@@ -337,31 +248,16 @@ public class Extractor{
 		    return extracted;
 		  }
 
-		  /**
-		   * Extract #hashtag references from Tweet text.
-		   *
-		   * @param text of the tweet from which to extract hashtags
-		   * @return List of hashtags referenced (without the leading # sign)
-		   */
 		  public List<Entity> extractHashtagsWithIndices(String text) {
 		    return extractHashtagsWithIndices(text, true);
 		  }
-
-		  /**
-		   * Extract #hashtag references from Tweet text.
-		   *
-		   * @param text of the tweet from which to extract hashtags
-		   * @param checkUrlOverlap if true, check if extracted hashtags overlap URLs and remove overlapping ones
-		   * @return List of hashtags referenced (without the leading # sign)
-		   */
+		  
 		  private List<Entity> extractHashtagsWithIndices(String text, boolean checkUrlOverlap) {
 		    if (text == null || text.length() == 0) {
 		      return Collections.emptyList();
 		    }
 
-		    // Performance optimization.
-		    // If text doesn't contain #/＃ at all, text doesn't contain
-		    // hashtag, so we can simply return an empty list.
+		    // If text doesn't contain #/＃ at all, simply return an empty list.
 		    boolean found = false;
 		    for (char c : text.toCharArray()) {
 		      if (c == '#' || c == '＃') {
@@ -388,8 +284,6 @@ public class Extractor{
 		      List<Entity> urls = extractURLsWithIndices(text);
 		      if (!urls.isEmpty()) {
 		        extracted.addAll(urls);
-		        // remove overlap
-		        removeOverlappingEntities(extracted);
 		        // remove URL entities
 		        Iterator<Entity> it = extracted.iterator();
 		        while (it.hasNext()) {

@@ -19,13 +19,13 @@ public class Regex {
 	private static final String HASHTAG_LETTERS_SET = "[" + HASHTAG_LETTERS + "]";
 	private static final String HASHTAG_LETTERS_NUMERALS_SET = "[" + HASHTAG_LETTERS_NUMERALS + "]";
 
-	/* URL related hash regex collection */
+	//URL related hash regex collection
 	private static final String URL_VALID_PRECEEDING_CHARS = "(?:[^A-Z0-9@＠$#＃\u202A-\u202E]|^)";
 
 	private static final String URL_VALID_CHARS = "[\\p{Alnum}" + "]";
 	private static final String URL_VALID_SUBDOMAIN = "(?>(?:" + URL_VALID_CHARS + "[" + URL_VALID_CHARS + "\\-_]*)?" + URL_VALID_CHARS + "\\.)";
 	private static final String URL_VALID_DOMAIN_NAME = "(?:(?:" + URL_VALID_CHARS + "[" + URL_VALID_CHARS + "\\-]*)?" + URL_VALID_CHARS + "\\.)";
-	/* Any non-space, non-punctuation characters. \p{Z} = any kind of whitespace or invisible separator. */
+	//Any non-space, non-punctuation characters. \p{Z} = any kind of whitespace or invisible separator
 	private static final String URL_VALID_UNICODE_CHARS = "[.[^\\p{Punct}\\s\\p{Z}\\p{InGeneralPunctuation}]]";
 	private static final String URL_PUNYCODE = "(?:xn--[0-9a-z]+)";
 	private static final String SPECIAL_URL_VALID_CCTLD = "(?:(?:" + "co|tv" + ")(?=[^\\p{Alnum}@]|$))";
@@ -35,54 +35,30 @@ public class Regex {
 	      URL_VALID_SUBDOMAIN + "+" + URL_VALID_DOMAIN_NAME +   // e.g. www.twitter.com, foo.co.jp, bar.co.uk
 	      "(?:" + URL_PUNYCODE + ")" +
 	      ")" +
-		  "|(?:" +                                                  // domain + gTLD + some ccTLD
+		  "|(?:" +                                                  // domain
 		    URL_VALID_DOMAIN_NAME +                                 // e.g. twitter.com
 		   "(?:" + URL_PUNYCODE + "|" + SPECIAL_URL_VALID_CCTLD + ")" +
 		    ")" +
 		    "|(?:" + "(?<=https?://)" +
 		      "(?:" +
-		        "(?:" + URL_VALID_DOMAIN_NAME + ")" +  // protocol + domain + ccTLD
+		        "(?:" + URL_VALID_DOMAIN_NAME + ")" +  // protocol + domain
 		        "|(?:" +
-		          URL_VALID_UNICODE_CHARS + "+\\." +                     // protocol + unicode domain + TLD
+		          URL_VALID_UNICODE_CHARS + "+\\." +                     // protocol + unicode domain
 		        ")" +
 		      ")" +
 		    ")" +
-		    "|(?:" +                                                  // domain + ccTLD + '/'
+		    "|(?:" +                                                  // domain + '/'
 		      URL_VALID_DOMAIN_NAME + "(?=/)" +     // e.g. t.co/
 		    ")";
-
+	
+	
 	private static final String URL_VALID_PORT_NUMBER = "[0-9]++";
     private static final String URL_VALID_GENERAL_PATH_CHARS = "[a-z\\p{IsCyrillic}0-9!\\*';:=\\+,.\\$/%#\\[\\]\\-_~\\|&@" + "]";
-		  /** Allow URL paths to contain up to two nested levels of balanced parens
-		   *  1. Used in Wikipedia URLs like /Primer_(film)
-		   *  2. Used in IIS sessions like /S(dfd346)/
-		   *  3. Used in Rdio URLs like /track/We_Up_(Album_Version_(Edited))/
-		  **/
-	private static final String URL_BALANCED_PARENS = "\\(" +
-		    "(?:" +
-		      URL_VALID_GENERAL_PATH_CHARS + "+" +
-		      "|" +
-		      // allow one nested level of balanced parentheses
-		      "(?:" +
-		        URL_VALID_GENERAL_PATH_CHARS + "*" +
-		        "\\(" +
-		          URL_VALID_GENERAL_PATH_CHARS + "+" +
-		        "\\)" +
-		        URL_VALID_GENERAL_PATH_CHARS + "*" +
-		      ")" +
-		    ")" +
-		  "\\)";
-
-		  /** Valid end-of-path characters (so /foo. does not gobble the period).
-		   *   2. Allow =&# for empty URL parameters and other URL-join artifacts
-		  **/
-	private static final String URL_VALID_PATH_ENDING_CHARS = "[a-z\\p{IsCyrillic}0-9=_#/\\-\\+" + "]|(?:" + URL_BALANCED_PARENS + ")";
 
 	private static final String URL_VALID_PATH = "(?:" +
 		    "(?:" +
 		      URL_VALID_GENERAL_PATH_CHARS + "*" +
-		      "(?:" + URL_BALANCED_PARENS + URL_VALID_GENERAL_PATH_CHARS + "*)*" +
-		      URL_VALID_PATH_ENDING_CHARS +
+		      "(?:" + URL_VALID_GENERAL_PATH_CHARS + "*)*" +
 		    ")|(?:@" + URL_VALID_GENERAL_PATH_CHARS + "+/)" +
 		  ")";
 
@@ -105,7 +81,7 @@ public class Regex {
 
 	private static final String AT_SIGNS_CHARS = "@\uFF20";
 
-	/* Begin public constants */
+	//Begin public constants
 	public static final Pattern VALID_HASHTAG;
 		  public static final int VALID_HASHTAG_GROUP_BEFORE = 1;
 		  public static final int VALID_HASHTAG_GROUP_HASH = 2;
@@ -124,17 +100,6 @@ public class Regex {
 		  public static final int VALID_REPLY_GROUP_USERNAME = 1;
 
 		  public static final Pattern INVALID_MENTION_MATCH_END;
-
-		  /**
-		   * Regex to extract URL (it also includes the text preceding the url).
-		   *
-		   * This regex does not reflect its name and {@link Regex#VALID_URL_GROUP_URL} match
-		   * should be checked in order to match a valid url. This is not ideal, but the behavior is
-		   * being kept to ensure backwards compatibility. Ideally this regex should be
-		   * implemented with a negative lookbehind as opposed to a negated character class
-		   * but lack of JS support increases maint overhead if the logic is different by
-		   * platform.
-		   */
 
 		  public static final Pattern VALID_URL;
 		  public static final int VALID_URL_GROUP_ALL          = 1;
