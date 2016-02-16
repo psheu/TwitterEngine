@@ -1,6 +1,10 @@
 # TwitterEngine
+COMP 330 Project 1
+
+# Project Overview
+The goal of project is designed to process Twitter-like messages using a parser and unit tests to ensure the code works properly. Mentions, hashtags and URLs have special requirements including a limitation on special characters and its lenght. 
+
+
 Resources:
 https://github.com/twitter/twitter-text
 
-Copyright 2014 Twitter, Inc
-Licensed under the Apache License, Version 2.0: http://www.apache.org/licenses/LICENSE-2.0
