@@ -1,7 +1,6 @@
 package Twitter;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 //runs tests to chekc the validity of tweets, mentions, hashtags, and URLs
@@ -46,16 +45,9 @@ public class ParserTest {
 		assertFalse(message.isValidTweet());
 	}
 	
-	//tests tweet with valid mentions, hashtags, URLs
-	@Test
-	public void isTweet1(){
-		Parser message = new Parser("@franky goes to #hollywood See http://cnn.com");
-		assertTrue(message.isValidTweet());
-	}
-	
 	//tests tweet with valid and invalid mentions, hashtags, URLs
 	@Test
-	public void isTweet2(){
+	public void isTweet1(){
 		Parser message = new Parser("@fr@nky$ goes to #hollywood http://www.cnn.com http//luc");
 		assertTrue(message.isValidTweet());
 		assertFalse(message.hasMention("fr@nky$"));
@@ -66,5 +58,4 @@ public class ParserTest {
 		//assertEquals(message.numHashtags(), 1);
 		//assertEquals(message.numUrls(), 1);
 	}
-	
 }
