@@ -24,8 +24,8 @@ public class Parser {
 		}
 		
 		//valid characters for mentions, hashtags, and URLs
-		final String MENTION = "[@]+([A-Za-z0-9-_]*)";
-		final String HASHTAG = "[#]+([A-Za-z0-9-_]*)";
+		final String MENTION = "[@]+([A-Za-z0-9-_]+)";
+		final String HASHTAG = "[#]+([A-Za-z0-9-_]+)";
 		final String URL = "(https?)://[a-zA-Z_0-9\\-]+([a-zA-Z_0-9\\-.]*)+([#&-=?+%.]*)?";
 		
 		//find and extract the mentions, hashtags, and URLS
@@ -77,7 +77,7 @@ public class Parser {
 	public boolean hasMention(final String mention){
 		return mentions.contains(mention);
 	}
-	public boolean hasHashtag(final String hashag){
+	public boolean hasHashtag(final String hashtag){
 		return hashtags.contains(hashtag);
 	}
 	public boolean hasUrl(final String url){
