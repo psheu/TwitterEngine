@@ -7,4 +7,4 @@ The goal of project is to process Twitter-like messages using a parser and to us
 
 Resources:
 https://github.com/twitter/twitter-text
-
+http://stackoverflow.com/questions/5091057/how-to-find-a-whole-word-in-a-string-in-java
