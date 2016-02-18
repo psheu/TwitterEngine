@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-//runs tests to chekc the validity of tweets, mentions, hashtags, and URLs
+//runs tests to check the validity of tweets, mentions, hashtags, and URLs
 public class ParserTest {	
 	//tests mentions in tweet
 	@Test
